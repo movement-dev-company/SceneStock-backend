@@ -13,10 +13,10 @@ SQLALCHEMY_DATABASE_URL = (
         + f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
 
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///./db.db"
+DATABASE_URL = SQLALCHEMY_DATABASE_URL
+DATABASE_URL = "sqlite:///./db.sqlite3"
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
+    DATABASE_URL,
     connect_args={"check_same_thread": False},
 )
 
