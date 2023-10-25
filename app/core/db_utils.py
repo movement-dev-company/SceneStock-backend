@@ -1,9 +1,8 @@
 from typing import Any
 
-from pydantic import BaseModel
 from fastapi import HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
-
 
 fields_names = {
     'username': 'Имя пользователя',

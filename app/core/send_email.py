@@ -2,7 +2,7 @@ import smtplib
 import ssl
 from email.message import EmailMessage
 
-from const import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+from const import EMAIL_HOST_PASSWORD, EMAIL_HOST_USER
 
 PORT = 465
 context = ssl.create_default_context()
