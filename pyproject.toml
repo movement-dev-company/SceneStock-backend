@@ -11,8 +11,9 @@ exclude = [
     "infra",
     "docs",
     ".vscode",
+    "migrations"
 ]
 
 [tool.ruff.isort]
 combine-as-imports = true
-known-local-folder = ["users", "core", "tags", "app", "const"]
+known-local-folder = ["users", "core", "tags", "app", "cons"]

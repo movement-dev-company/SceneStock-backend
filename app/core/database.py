@@ -1,7 +1,3 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session, sessionmaker
-
 from const import (
     DB_ENGINE,
     DB_HOST,
@@ -10,6 +6,9 @@ from const import (
     POSTGRES_PASSWORD,
     POSTGRES_USER,
 )
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session, sessionmaker
 
 SQLALCHEMY_DATABASE_URL = (
         f"{DB_ENGINE}+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}"

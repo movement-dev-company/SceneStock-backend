@@ -1,4 +1,7 @@
+
 from sqlalchemy import Boolean, Column, Integer, String
+
+from . import schemas
 
 # from sqlalchemy.orm import relationship
 from core.database import Base
@@ -12,6 +15,7 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
     is_superuser = Column(Boolean, default=False)
+    role = Column(String, default=schemas.Role.USER)
     # is_staff = Column(Boolean, default=False)
     # disabled = Column(Boolean, default=False)
     # first_name = Column(String, nullable=True)
