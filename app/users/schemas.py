@@ -1,6 +1,14 @@
 import re
+from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field, validator
+
+
+class Role(str, Enum):
+    ADMIN = 'admin'
+    MODERATOR = 'moderator'
+    USER = 'user'
 
 
 class BaseUser(BaseModel):
@@ -48,6 +56,7 @@ class BaseUser(BaseModel):
 class ShowUser(BaseModel):
     username: str
     email: EmailStr
+    role: Optional[Role] = Field(default=Role.USER)
 
     class Config:
         orm_mode = True
