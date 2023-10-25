@@ -1,7 +1,7 @@
 import uvicorn
-from const import API_URL
 from fastapi import FastAPI
 
+from const import API_URL
 from core.database import Base, engine
 from core.errors import exception_handler
 from tags.router import router_tags
