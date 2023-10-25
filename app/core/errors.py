@@ -1,7 +1,6 @@
-from fastapi import Request, status, HTTPException, FastAPI
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
-
+from fastapi.responses import JSONResponse
 
 error_msg_templates = {
     'value_error.email': ['Введите корректный адрес электронной почты'],

@@ -1,13 +1,12 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from . import models, schemas
-from core.database import get_db
-from core.hashing import hash_password
 from core.confirmation_code import create_confirmation_code
-from core.send_email import send_email
+from core.database import get_db
 from core.db_utils import check_if_already_registered
-
+from core.hashing import hash_password
+from core.send_email import send_email
 
 router_auth = APIRouter()
 
