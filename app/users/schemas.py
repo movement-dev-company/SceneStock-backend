@@ -66,3 +66,8 @@ class ConfirmationCode(BaseUser):
     confirmation_code: str = Field(
         min_length=6, max_length=6, regex=r'^[0-9]{6}$'
     )
+
+
+class LoginUser(BaseModel):
+    email: EmailStr
+    password: str

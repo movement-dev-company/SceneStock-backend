@@ -6,6 +6,7 @@ from core.database import Base, engine
 from core.errors import exception_handler
 from tags.router import router_tags
 from users.router import router_auth
+from users.auth import router_token
 
 app = FastAPI(arbitrary_types_allowed=True, debug=True)
 Base.metadata.create_all(bind=engine)
@@ -16,6 +17,9 @@ app.include_router(
 )
 app.include_router(
     router_tags, prefix=f'{API_URL}/tags', tags=['Tags'],
+)
+app.include_router(
+    router_token, prefix=f'{API_URL}', tags=['Token'],
 )
 exception_handler(app)
 

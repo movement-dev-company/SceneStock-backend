@@ -11,12 +11,12 @@ from const import (
     POSTGRES_USER,
 )
 
-SQLALCHEMY_DATABASE_URL = (
+'''SQLALCHEMY_DATABASE_URL = (
         f"{DB_ENGINE}+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
         + f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    )
+    )'''
 
-DATABASE_URL = SQLALCHEMY_DATABASE_URL
+#DATABASE_URL = SQLALCHEMY_DATABASE_URL
 DATABASE_URL = "sqlite:///./db.sqlite3"
 engine = create_engine(
     DATABASE_URL,
