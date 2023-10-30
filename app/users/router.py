@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+from . import models, schemas, oauth2
 from core.confirmation_code import create_confirmation_code
 from core.database import get_db
 from core.db_utils import check_if_already_registered
@@ -9,6 +9,7 @@ from core.hashing import hash_password
 from core.send_email import send_email
 
 router_auth = APIRouter()
+router_user = APIRouter()
 
 
 @router_auth.post(
@@ -72,3 +73,10 @@ async def signup_conformation(
     db.commit()
     db.refresh(new_user)
     return new_user
+
+
+@router_user.get('/me')
+async def get_me(db: Session = Depends(get_db),
+                 user_id: str = Depends(oauth2.require_user)):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    return user

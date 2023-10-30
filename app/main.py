@@ -5,9 +5,9 @@ from const import API_URL
 from core.database import Base, engine
 from core.errors import exception_handler
 from tags.router import router_tags
-from users.router import router_auth
+from users.router import router_auth, router_user
 from users.auth import router_token
-from users.user import router_user
+
 
 app = FastAPI(arbitrary_types_allowed=True, debug=True)
 Base.metadata.create_all(bind=engine)
