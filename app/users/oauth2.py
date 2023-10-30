@@ -52,7 +52,7 @@ def require_user(db: Session = Depends(get_db),
         if error == 'MissingTokenError':
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='Пользователь не авторизован')
+                detail='Токен не найден')
         if error == 'UserNotFound':
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

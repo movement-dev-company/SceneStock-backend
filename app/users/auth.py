@@ -1,9 +1,8 @@
 from datetime import timedelta
 from fastapi import (APIRouter, Depends,
                      HTTPException, status,
-                     Response, Request)
+                     Response)
 from sqlalchemy.orm import Session
-from pydantic import EmailStr
 
 from . import models, schemas, oauth2
 from core.database import get_db
@@ -12,17 +11,17 @@ from core.config import settings
 
 router_token = APIRouter()
 
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
-REFRESH_TOKEN_EXPIRE_MINUTES = settings.REFRESH_TOKEN_EXPIRE_MINUTES
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+REFRESH_TOKEN_EXPIRE_MINUTES = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
 
 
 @router_token.post('/login',)
-def login(request: schemas.LoginUser,
-          response: Response,
-          db: Session = Depends(get_db),
-          Authorize: oauth2.AuthJWT = Depends()):
+async def login(request: schemas.LoginUser,
+                response: Response,
+                db: Session = Depends(get_db),
+                Authorize: oauth2.AuthJWT = Depends()):
     user = db.query(models.User).filter(
-        models.User.email == EmailStr(request.email.lower())).first()
+        models.User.email == request.email.lower()).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Некорректный email')
@@ -35,26 +34,25 @@ def login(request: schemas.LoginUser,
     refresh_token = Authorize.create_refresh_token(
         subject=str(user.id), expires_time=timedelta(
             minutes=REFRESH_TOKEN_EXPIRE_MINUTES))
-    response.set_cookie('access_token', access_token,
-                        ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        '/', None, False, True, 'lax')
-    response.set_cookie('refresh_token', refresh_token,
-                        REFRESH_TOKEN_EXPIRE_MINUTES * 60,
-                        REFRESH_TOKEN_EXPIRE_MINUTES * 60,
-                        '/', None, False, True, 'lax')
-    response.set_cookie('logged_in', 'True',
-                        ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        '/', None, False, True, 'lax')
+    response.set_cookie(key='access_token',
+                        value=access_token,
+                        max_age=ACCESS_TOKEN_EXPIRE_MINUTES,
+                        httponly=True)
+    response.set_cookie(key='refresh_token',
+                        value=refresh_token,
+                        max_age=ACCESS_TOKEN_EXPIRE_MINUTES,
+                        httponly=True)
+    response.set_cookie(key='logged_in',
+                        value='True',
+                        max_age=REFRESH_TOKEN_EXPIRE_MINUTES,
+                        httponly=True)
     return {'status': 'success', 'access_token': access_token}
 
 
 @router_token.get('/refresh')
-def refresh_token(response: Response,
-                  request: Request,
-                  Authorize: oauth2.AuthJWT = Depends(),
-                  db: Session = Depends(get_db)):
+async def refresh_token(response: Response,
+                        Authorize: oauth2.AuthJWT = Depends(),
+                        db: Session = Depends(get_db)):
     try:
         Authorize.jwt_refresh_token_required()
 
@@ -78,21 +76,20 @@ def refresh_token(response: Response,
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=error)
 
-    response.set_cookie('access_token', access_token,
-                        ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        '/', None, False, True, 'lax')
-    response.set_cookie('logged_in', 'True',
-                        ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-                        '/', None, False, False, 'lax')
+    response.set_cookie(key='access_token',
+                        value=access_token,
+                        max_age=ACCESS_TOKEN_EXPIRE_MINUTES,
+                        httponly=True)
+    response.set_cookie(key='logged_in',
+                        value='True',
+                        max_age=REFRESH_TOKEN_EXPIRE_MINUTES,
+                        httponly=True)
     return {'access_token': access_token}
 
 
 @router_token.get('/logout', status_code=status.HTTP_200_OK)
-def logout(response: Response,
-           Authorize: oauth2.AuthJWT = Depends(),
-           user_id: str = Depends(oauth2.require_user)):
+async def logout(response: Response,
+                 Authorize: oauth2.AuthJWT = Depends()):
     Authorize.unset_jwt_cookies()
     response.set_cookie('logged_in', '', -1)
 
