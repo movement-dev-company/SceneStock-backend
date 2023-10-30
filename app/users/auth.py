@@ -46,7 +46,7 @@ async def login(request: schemas.LoginUser,
                         value='True',
                         max_age=REFRESH_TOKEN_EXPIRE_MINUTES,
                         httponly=True)
-    return {'status': 'success', 'access_token': access_token}
+    return user
 
 
 @router_token.get('/refresh')
