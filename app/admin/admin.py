@@ -11,6 +11,16 @@ from starlette.middleware import Middleware
 
 
 class AdminManager(Admin):
+    """
+    Custom administrative interface manager for web applications.
+
+    This class extends the functionality of the `Admin` class, allowing you
+    to manage and configure the administrative interface for your web
+    application.
+
+    The `AdminManager` class allows you to add database models and customize
+    the administrative interface of your web application.
+    """
 
     def __init__(
         self,

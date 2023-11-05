@@ -46,12 +46,22 @@ def index():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('create_superuser', type=str, nargs='?')
+    parser.add_argument(
+        'create_superuser', type=str, nargs='?',
+        help='Create user with superuser role'
+    )
+    parser.add_argument(
+        '--host', default='127.0.0.1', help='Host IP address for the server'
+    )
+    parser.add_argument(
+        '--port', type=int, default=8000, help='Port for the server'
+    )
     args = parser.parse_args()
+
     if args.create_superuser == 'create_superuser':
         print(create_superuser())
     else:
-        uvicorn.run(app, host='127.0.0.1', port=8000)
+        uvicorn.run(app, host=args.host, port=args.port)
 
 
 if __name__ == '__main__':
