@@ -59,6 +59,8 @@ class AdminManager(Admin):
         for model in models:
             if not isinstance(model, ModelViewMeta):
                 raise ValueError(
-                    f'Model {model.__name__} must be an instance of ModelView.'
+                    f'Model {model.__name__} must be an instance'
+                    ' of ModelViewMeta. Like: class '
+                    'ExampleAdmin(ModelView, model=Example):'
                 )
             self.add_view(model)

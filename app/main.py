@@ -23,7 +23,7 @@ admin = AdminManager(
     app, engine, title='SceneStock Admin',
     authentication_backend=authentication_backend
 )
-admin.add_db_models((UserAdmin, TagAdmin))
+admin.add_db_models((UserAdmin, TagAdmin, FastAPI))
 
 app.include_router(
     router_auth, prefix=f'{API_URL}/auth', tags=['Authentication'],
