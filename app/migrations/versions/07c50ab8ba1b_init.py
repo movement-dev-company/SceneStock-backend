@@ -1,8 +1,8 @@
-"""empty message
+"""init
 
-Revision ID: 4f1c0d83935f
+Revision ID: 07c50ab8ba1b
 Revises: 
-Create Date: 2023-10-29 12:24:33.075064
+Create Date: 2023-11-04 19:44:42.902819
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '4f1c0d83935f'
+revision: str = '07c50ab8ba1b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,11 +39,11 @@ def upgrade() -> None:
     op.create_index(op.f('ix_tags_slug'), 'tags', ['slug'], unique=True)
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('username', sa.String(), nullable=True),
-    sa.Column('email', sa.String(), nullable=True),
-    sa.Column('password', sa.String(), nullable=True),
+    sa.Column('username', sa.String(), nullable=False),
+    sa.Column('email', sa.String(), nullable=False),
+    sa.Column('password', sa.String(), nullable=False),
     sa.Column('is_superuser', sa.Boolean(), nullable=True),
-    sa.Column('role', sa.String(), nullable=True),
+    sa.Column('role', sa.Enum('ADMIN', 'MODERATOR', 'USER', name='role'), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)

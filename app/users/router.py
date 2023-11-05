@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from . import models, schemas, oauth2
+from . import models, oauth2, schemas
 from core.confirmation_code import create_confirmation_code
 from core.database import get_db
 from core.db_utils import check_if_already_registered
@@ -63,6 +63,8 @@ async def signup_conformation(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={'confirmation_code': 'Неверный код подтверждения'},
         )
+
+    db.delete(confirmation_code)
 
     user_dict = request.dict()
     user_dict.pop('confirmation_code')
