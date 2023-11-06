@@ -20,7 +20,7 @@ async def login(request: schemas.LoginUser,
                 db: Session = Depends(get_db),
                 Authorize: oauth2.AuthJWT = Depends()):
     user = db.query(models.User).filter(
-        models.User.email == request.email.lower()).first()
+        models.User.email == request.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Некорректный email')

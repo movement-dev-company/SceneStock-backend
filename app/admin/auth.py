@@ -6,7 +6,7 @@ from starlette.requests import Request
 
 from core.config import settings
 from core.database import get_db
-from core.hashing import verify_password
+from core.hashing import hash_password, verify_password
 from users.models import User
 
 
@@ -24,7 +24,10 @@ class AdminAuth(AuthenticationBackend):
 
         if user.is_superuser or user.is_admin:
             token = secrets.token_urlsafe(64)
-            request.session.update({'token': token})
+            request.session.update({
+                'token': token,
+                'secret_key': hash_password(settings.SECRET_KEY)
+            })
             return True
 
         raise HTTPException(
@@ -38,10 +41,11 @@ class AdminAuth(AuthenticationBackend):
 
     async def authenticate(self, request: Request) -> bool:
         token = request.session.get("token")
-
-        if not token:
-            return False
-        return True
+        if token and verify_password(
+            settings.SECRET_KEY, request.session.get("secret_key")
+        ):
+            return True
+        return False
 
 
 authentication_backend = AdminAuth(
