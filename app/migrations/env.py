@@ -6,6 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 from users.models import Base as UserBase
 from tags.models import Base as TagBase
+from categories.models import Base as CategoryBase
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -22,6 +23,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 target_metadata = UserBase.metadata
 target_metadata = TagBase.metadata
+target_metadata = CategoryBase.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
