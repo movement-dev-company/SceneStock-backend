@@ -1,0 +1,2 @@
+class ChangePasswordException(Exception):
+    pass

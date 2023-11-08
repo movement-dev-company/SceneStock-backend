@@ -1,3 +1,5 @@
+import os
+
 from pydantic import BaseSettings
 
 
@@ -14,11 +16,15 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_MINUTES: int
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     JWT_ALGORITHM: str
+    SECRET_KEY: str
 
-    #CLIENT_ORIGIN: str
+    # CLIENT_ORIGIN: str
 
     class Config:
-        env_file = './.env'
+        if os.path.exists('./.env'):
+            env_file = './.env'
+        else:
+            env_prefix = ''
 
 
 settings = Settings()

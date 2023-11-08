@@ -1,13 +1,12 @@
 from datetime import timedelta
-from fastapi import (APIRouter, Depends,
-                     HTTPException, status,
-                     Response)
+
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
-from . import models, schemas, oauth2
+from . import models, oauth2, schemas
+from core.config import settings
 from core.database import get_db
 from core.hashing import verify_password
-from core.config import settings
 
 router_token = APIRouter()
 
@@ -21,7 +20,7 @@ async def login(request: schemas.LoginUser,
                 db: Session = Depends(get_db),
                 Authorize: oauth2.AuthJWT = Depends()):
     user = db.query(models.User).filter(
-        models.User.email == request.email.lower()).first()
+        models.User.email == request.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Некорректный email')
