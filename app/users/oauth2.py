@@ -4,9 +4,6 @@ from fastapi import Depends, HTTPException, status
 from fastapi_jwt_auth import AuthJWT
 from pydantic import BaseModel
 
-from . import models
-from core.database import get_db
-from sqlalchemy.orm import Session
 from core.config import settings
 
 
@@ -28,36 +25,13 @@ def get_config():
     return Settings()
 
 
-class NotVerified(Exception):
-    pass
-
-
-class UserNotFound(Exception):
-    pass
-
-
-def require_user(db: Session = Depends(get_db),
-                 Authorize: AuthJWT = Depends()):
+def require_user(Authorize: AuthJWT = Depends()):
     try:
         Authorize.jwt_required()
         user_id = Authorize.get_jwt_subject()
-        user = db.query(models.User).filter(models.User.id == user_id).first()
 
-        if not user:
-            raise UserNotFound('Пользователь не существует')
-
-    except Exception as e:
-        error = e.__class__.__name__
-        print(error)
-        if error == 'MissingTokenError':
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='Токен не найден')
-        if error == 'UserNotFound':
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='Пользователь не существует')
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Токен недействителен или срок его действия истек')
+            detail='Токен недействителен или пользователь не найден')
     return user_id
