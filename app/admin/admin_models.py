@@ -4,6 +4,7 @@ from .exception import ChangePasswordException
 from core.hashing import hash_password
 from tags.models import Tag
 from users.models import User
+from users import schemas
 
 
 class UserAdmin(ModelView, model=User):
@@ -21,6 +22,10 @@ class UserAdmin(ModelView, model=User):
     async def on_model_change(self, form, model, is_created, *args, **kwargs):
         if is_created and form.get('password'):
             form['password'] = hash_password(form.get('password'))
+            try:
+                schemas.BaseUser(**form)
+            except Exception as e:
+                raise e
         elif not is_created and form.get('password') != model.password:
             raise ChangePasswordException('Пароль не может быть изменён')
 
